@@ -1,6 +1,6 @@
 import { configureStore, type Middleware } from "@reduxjs/toolkit";
 import { toast } from "sonner";
-import usersReducer, { UserWithId, rollbackUser } from "./users/slice";
+import usersReducer from "./users/slice";
 
 const persistanceLocalStorageMiddleware: Middleware =
 	(store) => (next) => (action) => {
@@ -13,8 +13,7 @@ const syncWithDatabaseMiddleware: Middleware =
 		const { type, payload } = action;
 		const previousState = store.getState();
 		next(action);
-
-		if (type === "users/deleteUserById") {
+		/**if (type === "users/deleteUserById") {
 			// <- eliminado un usuario
 			const userIdToRemove = payload;
 			const userToRemove = previousState.users.find(
@@ -36,7 +35,8 @@ const syncWithDatabaseMiddleware: Middleware =
 					console.log(err);
 					console.log("error");
 				});
-		}
+		} */
+		toast.success("Se elimino al usuario");
 	};
 
 export const store = configureStore({

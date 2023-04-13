@@ -1,5 +1,6 @@
 import {
 	Badge,
+	Button,
 	Card,
 	MultiSelectBox,
 	MultiSelectBoxItem,
@@ -9,29 +10,28 @@ import {
 	TableHead,
 	TableHeaderCell,
 	TableRow,
+	TextInput,
 	Title,
 } from "@tremor/react";
-import { useState } from "react";
-import { useAppSelector } from "../hooks/store";
-import { useUserActions } from "../hooks/useUserActions";
+import { useListOfUsers } from "../hooks/useListOfUsers";
 import { useUsersSelected } from "../hooks/useUsersSelected";
 import { CreateNewUser } from "./CreateNewUser";
 import { IconDelete, IconEdit, IconMinus, IconPlus } from "./Icons";
 
 export default function ListOfUsers() {
-	const users = useAppSelector((state) => state.users);
-	const { removeUser } = useUserActions();
+	const {
+		handleEditar,
+		handleCrear,
+		handleSubmit,
+		Editar,
+		userEdit,
+		changeEdit,
+		Crear,
+		users,
+		removeUser,
+	} = useListOfUsers();
 	const { selectedNames, setSelectedNames, isUsersSelected } =
 		useUsersSelected();
-	const [Crear, setCrear] = useState(false);
-
-	const handleCrear = () => {
-		setCrear(!Crear);
-	};
-
-	const handleEdit = () => {
-		//falta
-	};
 
 	return (
 		<>
@@ -92,7 +92,7 @@ export default function ListOfUsers() {
 									</TableCell>
 									<TableCell>{item.email}</TableCell>
 									<TableCell>
-										<button type="button" onClick={handleEdit}>
+										<button type="button" onClick={() => handleEditar(item.id)}>
 											{" "}
 											<IconEdit />{" "}
 										</button>
@@ -105,7 +105,7 @@ export default function ListOfUsers() {
 					</TableBody>
 				</Table>
 			</Card>
-			<div className="pt-6 pb-6 flex items-center justify-center ">
+			<div className="pt-6 pb-6 flex items-center justify-center">
 				{!Crear ? (
 					<div>
 						<button
@@ -130,6 +130,48 @@ export default function ListOfUsers() {
 							<CreateNewUser />
 						</div>
 					</div>
+				)}
+			</div>
+			<div className="pt-6 pb-6 flex items-center justify-center">
+				{Editar && (
+					<Card style={{ marginTop: "16px" }}>
+						<Title className="text-center">Edit User</Title>
+
+						<form onSubmit={handleSubmit} className="">
+							<TextInput
+								name="name"
+								defaultValue={userEdit?.name}
+								placeholder="name"
+							/>
+							<TextInput
+								name="email"
+								defaultValue={userEdit?.email}
+								placeholder="email"
+							/>
+							<TextInput
+								name="github"
+								defaultValue={userEdit?.github}
+								placeholder="github"
+							/>
+
+							<div className="text-center">
+								<Button
+									className="bg-green-500 hover:bg-green-700"
+									type="submit"
+									style={{ marginTop: "16px", marginRight: "5px" }}
+								>
+									Guardar cambios
+								</Button>
+								<Button
+									className="bg-red-500 hover:bg-red-700"
+									onClick={changeEdit}
+									style={{ marginTop: "16px" }}
+								>
+									Cancelar
+								</Button>
+							</div>
+						</form>
+					</Card>
 				)}
 			</div>
 		</>
